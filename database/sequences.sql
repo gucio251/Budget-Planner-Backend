@@ -1,0 +1,9 @@
+CREATE SEQUENCE budget.user_id_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.income_category_default_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.income_category_user_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.income_id_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.expense_category_default_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.expense_category_user_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.expense_id_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.payment_methods_default_seq MINVALUE 1 START 1;
+CREATE SEQUENCE budget.payment_methods_user_seq MINVALUE 1 START 1;
