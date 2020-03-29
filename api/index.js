@@ -4,8 +4,10 @@ import dotenv from 'dotenv'
 import {signin, signup, protect} from './middleware/auth'
 import Users from './controllers/Users'
 import ExpenseTypes from './controllers/ExpenseTypes'
+import incomeCategories from './controllers/IncomeCategories'
 import PaymentMethods from './controllers/PaymentMethods'
 import Expense from './controllers/Expense'
+import IncomeCategories from './controllers/IncomeCategories'
 
 dotenv.config();
 
@@ -47,6 +49,11 @@ router.put('/expenses/:id', protect, Expense.update)
 router.get('/expenses/:startDate/:endDate', protect, Expense.getAll)
 router.get('/expenses/sorted/:startDate/:endDate', protect, Expense.getAllSortedByType)
 router.delete('/expenses/:id', protect, Expense.delete)
+
+router.get('/incomeCategories', protect, IncomeCategories.getAll)
+router.post('/incomeCategories', protect, IncomeCategories.addOne)
+router.put('/incomeCategories/:id', protect, IncomeCategories.update)
+router.delete('/incomeCategories/:id', protect, IncomeCategories.delete)
 
 app.listen(app.get('port'), () => {
     console.log('Express started on http://' + app.get('host') + ':' + app.get('port') + '/api; press Ctrl-C to terminate.')
