@@ -147,13 +147,9 @@ describe('expense features testing', () => {
 
     it('shall be updated successfully with status 200', (done) => {
         chai.request(app)
-            .put('/api/expenses')
+            .put(`/api/expenses/${Expense.id}`)
             .set('Authorization', userToken)
             .send({
-                oldType: Expense.type,
-                oldPayment: Expense.payment_type,
-                oldAmount: Expense.amount,
-                oldDate: Expense.date,
                 newType: newExpense.type,
                 newPayment: newExpense.payment_type
             })
@@ -168,7 +164,7 @@ describe('expense features testing', () => {
 
     it('shall be rejected due to fact that payment type is not registered for user', (done) => {
         chai.request(app)
-            .put('/api/expenses')
+            .put(`/api/expenses/${Expense.id}`)
             .set('Authorization', userToken)
             .send({
                 oldType: newExpense.type,

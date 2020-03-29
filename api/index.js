@@ -43,7 +43,7 @@ router.put('/paymentMethods', protect, PaymentMethods.updatePaymentMethod)
 router.delete('/paymentMethods', protect, PaymentMethods.deletePaymentMethod)
 
 router.post('/expenses', protect, Expense.add)
-router.put('/expenses', protect, Expense.update)
+router.put('/expenses/:id', protect, Expense.update)
 router.get('/expenses/:startDate/:endDate', protect, Expense.getAll)
 router.get('/expenses/sorted/:startDate/:endDate', protect, Expense.getAllSortedByType)
 router.delete('/expenses/:id', protect, Expense.delete)

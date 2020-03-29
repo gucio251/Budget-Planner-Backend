@@ -70,28 +70,18 @@ const Expense = {
     },
 
     async update(req, res){
-        const selectOldExpense = 'SELECT * FROM budget.expenses WHERE user_id = $1 AND expense_category_assigned_to_user_id = $2 AND payment_type_assigned_to_user_id = $3 AND amount = $4 AND date = $5'
+        const selectOldExpense = 'SELECT * FROM budget.expenses WHERE id = $1'
         const updateExpense = 'UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, payment_type_assigned_to_user_id = $2, amount = $3, date = $4, comments = $5 WHERE id = $6'
 
-        if(!req.body.oldType || !req.body.oldPayment || !req.body.oldAmount || !req.body.oldDate){
-            return res.status(400).send({message: 'Missing required request parameters'})
+        if(!req.params.id){
+            return res.status(400).send({message: 'Missing expense id'})
         }
 
         try{
-            const {expenseType, paymentType} = await getPaymentTypeAndExpenseCategoryIDs(req.user.id, req.body.oldPayment, req.body.oldType)
-
-            const selectQueryValues = [
-                req.user.id,
-                expenseType.id,
-                paymentType.id,
-                req.body.oldAmount,
-                req.body.oldDate
-            ]
-
-            const { rows } = await db.query(selectOldExpense, selectQueryValues)
+            const { rows } = await db.query(selectOldExpense, [req.params.id])
 
             if(!rows[0]){
-                return res.status(400).send({message: 'Expense with given paramters does not exist in db'})
+                return res.status(400).send({message: 'Expense with given id does not exist in db'})
             }
 
             const oldExpense = rows[0]
