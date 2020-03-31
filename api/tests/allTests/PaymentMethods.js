@@ -38,40 +38,36 @@ describe('Testing payment methods', () => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`${paymentMethodValues.new} has been added`)
+                res.body.should.have.property('message').eql(`Payment method has been successfully added`)
+                res.body.should.have.property('result')
+                paymentMethodValues.id = res.body.result
                 done()
             })
     }),
 
-    it('shall modify existing expense type to new given', (done) => {
+    it('shall updated name based on id, status 200', (done) => {
         chai.request(app)
-            .put('/api/paymentMethods')
+            .put(`/api/paymentMethods/${paymentMethodValues.id}`)
             .set('Authorization', userToken)
-            .send({
-                oldName: paymentMethodValues.new,
-                newName: paymentMethodValues.updated
-            })
+            .send({ name: paymentMethodValues.updated})
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`${paymentMethodValues.new} has been updated to ${paymentMethodValues.updated}`)
+                res.body.should.have.property('message').eql(`Payment method has been successfully updated`)
                 done()
             })
     }),
 
-    it('shall delete payment method with given name', (done) => {
+    it('shall delete payment method based on id', (done) => {
         chai.request(app)
-            .delete('/api/paymentMethods')
+            .delete(`/api/paymentMethods/${paymentMethodValues.id}`)
             .set('Authorization', userToken)
-            .send({
-                name: paymentMethodValues.updated
-            })
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.an('Object')
                 res.should.be.json
-                res.body.should.have.property('message').eql(`${paymentMethodValues.updated} has been successfully deleted`)
+                res.body.should.have.property('message').eql(`Payment method has been successfully deleted`)
                 done()
             })
     }),
