@@ -1,7 +1,7 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from './../../index'
-import db from './../../db/index'
+import app from '../../index'
+import db from '../../db/index'
 
 chai.use(chaiHttp)
 chai.should()
@@ -53,7 +53,7 @@ describe('Testing Expense Categories', () => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`${incomeCategory.name} has been successfully added`)
+                res.body.should.have.property('message').eql(`Income type has been successfully added`)
                 res.body.should.have.property('result')
                 incomeCategory.id = res.body.result
                 done()
@@ -65,14 +65,13 @@ describe('Testing Expense Categories', () => {
             .put(`/api/incomeCategories/${incomeCategory.id}`)
             .send({
                 name: incomeCategory.updatedName,
-                oldIncomeId: incomeCategory.id
             })
             .set('Authorization', userToken)
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`${incomeCategory.name} has been successfully updated to ${incomeCategory.updatedName}`)
+                res.body.should.have.property('message').eql(`Payment method has been successfully updated`)
                 done()
             })
     }),
@@ -85,7 +84,7 @@ describe('Testing Expense Categories', () => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`Income category has been successfully deleted`)
+                res.body.should.have.property('message').eql(`Income Type has been successfully deleted`)
                 done()
             })
     })
