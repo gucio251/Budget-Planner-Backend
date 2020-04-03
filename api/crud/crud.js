@@ -62,7 +62,7 @@ const CRUD = {
             }
 
             await config.updateQuery(req)
-            return res.status(200).send({ message: `Payment method has been successfully updated` })
+            return res.status(200).send({ message: `${config.name} has been successfully updated` })
         }catch(err){
             return res.status(400).send({ message: err })
         }
