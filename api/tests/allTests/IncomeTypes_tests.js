@@ -29,9 +29,9 @@ describe('Testing Expense Categories', () => {
             })
     })
 
-    it('shall return all incomeCategories available for user, status 200', (done) => {
+    it('shall return all incomeTypes available for user, status 200', (done) => {
         chai.request(app)
-            .get('/api/incomeCategories')
+            .get('/api/incomeTypes')
             .set('Authorization', userToken)
             .end((err, res) => {
                 res.should.have.status(200)
@@ -46,7 +46,7 @@ describe('Testing Expense Categories', () => {
 
     it('shall successfully add incomeCategory, status 200', (done) => {
         chai.request(app)
-            .post('/api/incomeCategories')
+            .post('/api/incomeTypes')
             .send({name: incomeCategory.name})
             .set('Authorization', userToken)
             .end((err, res) => {
@@ -62,7 +62,7 @@ describe('Testing Expense Categories', () => {
 
     it('shall successfully update income category, status 200', (done) => {
         chai.request(app)
-            .put(`/api/incomeCategories/${incomeCategory.id}`)
+            .put(`/api/incomeTypes/${incomeCategory.id}`)
             .send({
                 name: incomeCategory.updatedName,
             })
@@ -71,14 +71,14 @@ describe('Testing Expense Categories', () => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql(`Payment method has been successfully updated`)
+                res.body.should.have.property('message').eql(`Income Type has been successfully updated`)
                 done()
             })
     }),
 
     it('shall successfully delete income category, status 200', (done) => {
         chai.request(app)
-            .delete(`/api/incomeCategories/${incomeCategory.id}`)
+            .delete(`/api/incomeTypes/${incomeCategory.id}`)
             .set('Authorization', userToken)
             .end((err, res) => {
                 res.should.have.status(200)

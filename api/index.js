@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import {signin, signup, protect} from './middleware/auth'
 import Users from './controllers/Users'
 import ExpenseTypes from './controllers/ExpenseTypes'
-import incomeTypes from './controllers/IncomeTypes'
+import IncomeTypes from './controllers/IncomeTypes'
 import PaymentMethods from './controllers/PaymentMethods'
 import Expense from './controllers/Expense'
 
@@ -33,10 +33,10 @@ router.delete('/users/me', protect, Users.deleteUser)
 router.get('/users/me', protect, Users.getUserInfo)
 router.put('/users/me/password', protect, Users.updatePassword)
 
-router.get('/expenseCategories', protect, ExpenseTypes.allExpenseCategories)
-router.post('/expenseCategories', protect, ExpenseTypes.addExpense)
-router.put('/expenseCategories', protect, ExpenseTypes.updateExpense)
-router.delete('/expenseCategories', protect, ExpenseTypes.deleteExpense)
+router.get('/expenseTypes', protect, ExpenseTypes.getAll)
+router.post('/expenseTypes', protect, ExpenseTypes.add)
+router.put('/expenseTypes/:id', protect, ExpenseTypes.update)
+router.delete('/expenseTypes/:id', protect, ExpenseTypes.delete)
 
 router.get('/paymentMethods/all', protect, PaymentMethods.getAll)
 router.post('/paymentMethods', protect, PaymentMethods.add)
@@ -49,10 +49,10 @@ router.get('/expenses/:startDate/:endDate', protect, Expense.getAll)
 router.get('/expenses/sorted/:startDate/:endDate', protect, Expense.getAllSortedByType)
 router.delete('/expenses/:id', protect, Expense.delete)
 
-router.get('/incomeCategories', protect, incomeTypes.getAll)
-router.post('/incomeCategories', protect, incomeTypes.add)
-router.put('/incomeCategories/:id', protect, incomeTypes.update)
-router.delete('/incomeCategories/:id', protect, incomeTypes.delete)
+router.get('/incomeTypes', protect, IncomeTypes.getAll)
+router.post('/incomeTypes', protect, IncomeTypes.add)
+router.put('/incomeTypes/:id', protect, IncomeTypes.update)
+router.delete('/incomeTypes/:id', protect, IncomeTypes.delete)
 
 app.listen(app.get('port'), () => {
     console.log('Express started on http://' + app.get('host') + ':' + app.get('port') + '/api; press Ctrl-C to terminate.')

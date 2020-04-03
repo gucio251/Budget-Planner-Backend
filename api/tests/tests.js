@@ -1,5 +1,5 @@
 require('./allTests/Users')
-require('./allTests/ExpenseCategories')
+require('./allTests/ExpenseTypes_tests')
 require('./allTests/PaymentMethods_tests')
 require('./allTests/Expenses')
 require('./allTests/IncomeTypes_tests')

@@ -13,6 +13,11 @@ const userData = {
     password: 'test'
 }
 
+const expenseType = {
+    name: 'testowyWydatek',
+    updatedName: 'nowyTestowyWydatek'
+}
+
 describe('testing expense types', () => {
     before((done) => {
         chai.request(app)
@@ -26,90 +31,71 @@ describe('testing expense types', () => {
 
     it('shall return all expense types available', (done) => {
         chai.request(app)
-            .get('/api/expenseCategories')
+            .get('/api/expenseTypes')
             .set('Authorization', userToken)
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('allExpenseTypes')
-                res.body.allExpenseTypes.should.be.an('array')
+                res.body.should.have.property('result')
+                res.body.result.should.be.an('array')
                 done()
             })
     })
 
     it('shall add single expense' , (done) => {
         chai.request(app)
-            .post('/api/expenseCategories')
+            .post('/api/expenseTypes')
             .set('Authorization', userToken)
-            .send({name: 'testowyWydatek'})
+            .send({name: expenseType.name})
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql('Expense has been successfully added')
+                res.body.should.have.property('message').eql('Expense type has been successfully added')
+                expenseType.id = res.body.result
                 done()
             })
     })
 
     it('shall update single expense', (done) => {
         chai.request(app)
-            .put('/api/expenseCategories')
+            .put(`/api/expenseTypes/${expenseType.id}`)
             .set('Authorization', userToken)
             .send({
-                newName: 'nowyTestowyWydatek',
-                oldName: 'testowyWydatek'
+                name: expenseType.updatedName
             })
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('object')
-                res.body.should.have.property('message').eql('testowyWydatek has been successfully updated to nowyTestowyWydatek')
-                done()
-            })
-    })
-
-    it('shall not update single expense because old does not exist', (done) => {
-        chai.request(app)
-            .put('/api/expenseCategories')
-            .set('Authorization', userToken)
-            .send({
-                newName: 'nowyTestowyWydatek',
-                oldName: 'testowyWydatek11'
-            })
-            .end((err, res) => {
-                res.should.have.status(400)
-                res.should.be.json
-                res.should.be.an('Object')
-                res.body.should.have.property('message').eql('There is no Expense Category to modify')
+                res.body.should.have.property('message').eql('Expense type has been successfully updated')
                 done()
             })
     })
 
     it('shall delete single expense', (done) => {
         chai.request(app)
-            .delete('/api/expenseCategories')
+            .delete(`/api/expenseTypes/${expenseType.id}`)
             .set('Authorization', userToken)
-            .send({name: 'nowyTestowyWydatek'})
             .end((err, res) => {
                 res.should.have.status(200)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql('nowyTestowyWydatek has been successfully deleted')
+                res.body.should.have.property('message').eql('Expense type has been successfully deleted')
                 done()
             })
     })
 
     it('shall not delete single expense because name is unknown', (done) => {
         chai.request(app)
-            .delete('/api/expenseCategories')
+            .delete(`/api/expenseTypes/${expenseType.id}`)
             .set('Authorization', userToken)
-            .send({name: 'nowyTestowyWydatekxxx'})
             .end((err, res) => {
                 res.should.have.status(400)
                 res.should.be.json
                 res.should.be.an('Object')
-                res.body.should.have.property('message').eql('There is no Expense Category to modify')
+                res.body.should.have.property('message').eql('Expense type has not been found in Database')
                 done()
             })
     })
