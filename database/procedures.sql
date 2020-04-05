@@ -201,7 +201,7 @@ CREATE OR REPLACE FUNCTION budget.getExpensesGroupedByType(startDate DATE, endDa
 $$ LANGUAGE plpgsql;
 
 --function to return incomes grouped by type for logged user
-CREATE OR REPLACE FUNCTION budget.getIncomesGroupedByType(startDate DATE, endDate DATE, loggedUser_id INTEGER) RETURNS TABLE (type VARCHAR, total_amount DECIMAL) AS $$
+CREATE OR REPLACE FUNCTION budget.getIncomesGroupedByType(startDate DATE, endDate DATE, loggedUser_id INTEGER) RETURNS TABLE (result JSON) AS $$
     DECLARE
         temp DATE;
     BEGIN
@@ -211,10 +211,11 @@ CREATE OR REPLACE FUNCTION budget.getIncomesGroupedByType(startDate DATE, endDat
             endDate = temp;
         END IF;
 
-        RETURN QUERY
+        RETURN QUERY SELECT row_to_json(incomes) FROM(
             SELECT income_type, sum(amount)
             FROM budget.incomes_overview
             WHERE transaction_date BETWEEN startDate AND EndDate AND user_id = loggedUser_id
-            GROUP BY income_type;
+            GROUP BY income_type
+        ) incomes;
     END;
 $$ LANGUAGE plpgsql;
