@@ -1,7 +1,6 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import app from '../../index'
-import db from '../../db/index'
 
 chai.use(chaiHttp)
 chai.should()
@@ -74,7 +73,7 @@ describe('testing expense types', () => {
             })
     })
 
-    it('shall delete single expense', (done) => {
+    it('shall delete single expense type', (done) => {
         chai.request(app)
             .delete(`/api/expenseTypes/${expenseType.id}`)
             .set('Authorization', userToken)

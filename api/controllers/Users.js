@@ -56,8 +56,6 @@ const Users = {
         } catch(err){
             res.status(400).send(err)
         }
-
-
     },
 
     async deleteUser(req, res){

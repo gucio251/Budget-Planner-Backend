@@ -6,7 +6,8 @@ import Users from './controllers/Users'
 import ExpenseTypes from './controllers/ExpenseTypes'
 import IncomeTypes from './controllers/IncomeTypes'
 import PaymentMethods from './controllers/PaymentMethods'
-import Expense from './controllers/Expense'
+import Expense from './controllers/Expenses'
+import Income from './controllers/Incomes'
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ const router = express.Router()
 app.use('/api', router)
 
 router.get('/api', (req, res) => {
-    res.status(200).json({ message: 'dasd' })
+    res.status(200).json({ message: 'Welcome to budget planner api' })
 })
 
 
@@ -43,16 +44,22 @@ router.post('/paymentMethods', protect, PaymentMethods.add)
 router.put('/paymentMethods/:id', protect, PaymentMethods.update)
 router.delete('/paymentMethods/:id', protect, PaymentMethods.delete)
 
+router.get('/incomeTypes', protect, IncomeTypes.getAll)
+router.post('/incomeTypes', protect, IncomeTypes.add)
+router.put('/incomeTypes/:id', protect, IncomeTypes.update)
+router.delete('/incomeTypes/:id', protect, IncomeTypes.delete)
+
 router.post('/expenses', protect, Expense.add)
 router.put('/expenses/:id', protect, Expense.update)
 router.get('/expenses/:startDate/:endDate', protect, Expense.getAll)
 router.get('/expenses/sorted/:startDate/:endDate', protect, Expense.getAllSortedByType)
 router.delete('/expenses/:id', protect, Expense.delete)
 
-router.get('/incomeTypes', protect, IncomeTypes.getAll)
-router.post('/incomeTypes', protect, IncomeTypes.add)
-router.put('/incomeTypes/:id', protect, IncomeTypes.update)
-router.delete('/incomeTypes/:id', protect, IncomeTypes.delete)
+router.post('/incomes', protect, Income.add)
+router.get('/incomes/:startDate/:endDate', protect, Income.getAll)
+router.get('/incomes/sorted/:startDate/:endDate', protect, Income.getAllSortedByType)
+router.put('/incomes/:id', protect, Income.update)
+router.delete('/incomes/:id', protect, Income.delete)
 
 app.listen(app.get('port'), () => {
     console.log('Express started on http://' + app.get('host') + ':' + app.get('port') + '/api; press Ctrl-C to terminate.')
