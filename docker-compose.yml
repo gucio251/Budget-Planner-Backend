@@ -1,0 +1,24 @@
+version: "3"
+services:
+    web:
+      build: ./api/
+      ports:
+        - "3000:3000"
+      volumes:
+        - .:/api/usr/src/app
+        - /api/usr/src/app/node_modules
+      depends_on:
+        - db
+      environment:
+        DATABASE_URL: postgres://postgres:jasiu12@db:5432/test
+    db:
+      image: postgres:12-alpine
+      ports:
+        - "5436:5432"
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=jasiu12
+        - POSTGRES_DB=test
+      volumes:
+        - .:/database/usr/src/app/create_database.sql
+      command: ["printenv"]
