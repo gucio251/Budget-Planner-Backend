@@ -1,24 +1,28 @@
-version: "3"
+version: '3.1'
+
 services:
-    web:
-      build: ./api/
-      ports:
-        - "3000:3000"
-      volumes:
-        - .:/api/usr/src/app
-        - /api/usr/src/app/node_modules
-      depends_on:
-        - db
-      environment:
-        DATABASE_URL: postgres://postgres:jasiu12@db:5432/test
-    db:
-      image: postgres:12-alpine
-      ports:
-        - "5436:5432"
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=jasiu12
-        - POSTGRES_DB=test
-      volumes:
-        - .:/database/usr/src/app/create_database.sql
-      command: ["printenv"]
+  testing-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${TEST_DATABASE_USER}
+      POSTGRES_PASSWORD: ${TEST_DATABASE_PASSWORD}
+      POSTGRES_DB: ${TEST_DATABASE_NAME}
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d/
+
+  production-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    container_name: postgresProd
+    ports:
+      - "5436:5432"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d/

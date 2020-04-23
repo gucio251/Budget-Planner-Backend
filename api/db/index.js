@@ -1,24 +1,22 @@
 import {Pool, types} from 'pg'
 import dotenv from 'dotenv'
 import 'babel-polyfill'
+import config from './../config/index'
+
+console.log(config)
 
 dotenv.config();
+
+console.log(process.env.NODE_ENV)
 
 const DATE_OID = 1082
 const TIMESTAMP_OID = 1114
 types.setTypeParser(DATE_OID, (date) => date)
 types.setTypeParser(TIMESTAMP_OID, (timestamp) => timestamp)
 
-//if(process.env.NODE_ENV !== 'test'){
-    const pool = new Pool({
-        connectionString: process.env.DATABASE_URL
-    })
-/* else{
-    const pool = new Pool({
-        connectionString: process.env.TEST_DATABASE_URL
-    })
-}
- */
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+})
 
 export default {
     query(text, params){
