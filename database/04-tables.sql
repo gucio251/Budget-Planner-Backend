@@ -1,9 +1,8 @@
 CREATE TABLE budget.users
 (
     id INTEGER NOT NULL DEFAULT nextval('budget.user_id_seq'),
-    login VARCHAR NOT NULL UNIQUE,
-    password VARCHAR NOT NULL,
     email budget.email NOT NULL UNIQUE,
+    password VARCHAR NOT NULL,
     PRIMARY KEY (id)
 );
 

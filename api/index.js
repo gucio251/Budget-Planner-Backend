@@ -29,6 +29,7 @@ router.get('/api', (req, res) => {
 
 router.post('/signin', signin)
 router.post('/signup', signup)
+router.get('/users', Users.getUsersEmails)
 router.put('/users/me', protect, Users.updateUserInfo)
 router.delete('/users/me', protect, Users.deleteUser)
 router.get('/users/me', protect, Users.getUserInfo)

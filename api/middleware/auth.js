@@ -19,11 +19,11 @@ export const verifyToken = token =>
     })
 
 export const signin = async (req, res) => {
-    if(!req.body.login || !req.body.password){
-        return res.status(400).send({message: "There is login/password missing"})
+    if(!req.body.email || !req.body.password){
+        return res.status(400).send({message: "There is email/password missing"})
     }
 
-    let user = await getUserByLogin(req.body.login)
+    let user = await getUserByEmail(req.body.email)
 
     if(!user){
         return res.status(400).send({message: `${req.body.login} does not exist in database`})
@@ -38,22 +38,22 @@ export const signin = async (req, res) => {
 }
 
 export const signup = async (req, res) =>{
-    if(!req.body.login || !req.body.password || !req.body.email){
-        return res.status(400).send({message: "There is no login/password/email"})
+    if(!req.body.password || !req.body.email){
+        return res.status(400).send({message: "There is no email/password"})
     }
 
-    let userInDb = await getUserByLogin(req.body.login)
+    let userInDb = await getUserByEmail(req.body.email)
 
     if(userInDb){
-        return res.status(400).send({message: "This login is already taken. Cannot add user"})
+        return res.status(400).send({message: "This email is already taken. Cannot add user"})
     }
 
     try{
         const user = await addUser(req.body)
         const token = newToken(user)
-        return res.status(201).send({token})
+        return res.status(201).send({email: user.email, token})
     } catch(error){
-        return res.status(400).send({message: "Email is not unique. You cannot have two accounts registered on one email"})
+        return res.status(400).send({message: "Email is not unique/is not in required format for email"})
     }
 }
 
@@ -84,11 +84,11 @@ export const protect = async (req, res, next) =>{
     next()
 }
 
-async function getUserByLogin(login){
-    const queryText = 'SELECT * FROM budget.users WHERE login = $1'
+async function getUserByEmail(email){
+    const queryText = 'SELECT * FROM budget.users WHERE email = $1'
 
     try {
-        const {rows} = await db.query(queryText, [login])
+        const {rows} = await db.query(queryText, [email])
         return rows[0]
     } catch(error){
         return error
@@ -107,23 +107,24 @@ async function getUserById(id){
 }
 
 async function addUser (user){
-    const {login, password, email} = user
+    const {email, password} = user
 
     const hashPassword = bcrypt.hashSync(password, 10)
 
-    const queryText = 'INSERT INTO budget.users VALUES(DEFAULT, $1, $2, $3)'
+    const queryText = 'INSERT INTO budget.users VALUES(DEFAULT, $1, $2)'
 
     const queryValues = [
-        login,
-        hashPassword,
-        email
+        email,
+        hashPassword
     ]
 
     try {
         await db.query(queryText, queryValues)
-        const addedUser = await getUserByLogin(login)
+        const addedUser = await getUserByEmail(email)
+        console.log(addedUser);
         return addedUser
     } catch(e){
+        //console.log(e);
         throw new Error(e.detail)
     }
 }

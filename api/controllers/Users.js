@@ -100,6 +100,22 @@ const Users = {
            return res.status(400).send(err)
        }
 
+    },
+
+    async getUsersEmails(req, res){
+        const selectQuery = "SELECT * FROM budget.users"
+
+        try{
+            const {rows} = await db.query(selectQuery)
+
+            const emails = rows.map(row => row.email);
+
+            return res.status(200).send({
+                users: emails
+            })
+        }catch(err){
+            return res.status(400).send(err)
+        }
     }
 }
 
