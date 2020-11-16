@@ -1,18 +1,18 @@
 import db from '../db/index'
-import CRUD from './../crud/crud'
-import Queries from './../queries/PaymentMethodsQueries'
+import CRUD from '../crud/crud'
+import Queries from '../queries/CurrenciesQueries'
 
 const PaymentMethods = {
     async add(req, res){
         await CRUD.addOne(req, res, {
-            name: 'Payment method',
+            name: 'Currencies',
             dbQuery: Queries.addPaymentQuery
         })
     },
 
     async delete(req, res) {
         await CRUD.deleteOne(req, res, {
-            name: 'Payment method',
+            name: 'Currencies',
             selectQuery: Queries.selectPaymentQuery,
             deleteQuery: Queries.deletePaymentQuery
         })
@@ -20,15 +20,15 @@ const PaymentMethods = {
 
     async getAll(req, res) {
         await CRUD.getAll(req, res, {
-            name: 'Payment method',
+            name: 'Currencies',
             property: 'name',
-            selectAll: Queries.selectAllPaymentsQuery
+            selectAll: Queries.selectAllCurrencies
         })
     },
 
     async update(req, res){
         await CRUD.update(req, res, {
-            name: 'Payment method',
+            name: 'Currencies',
             selectQuery: Queries.selectPaymentQuery,
             updateQuery: Queries.updatePaymentQuery
         })

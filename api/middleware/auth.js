@@ -33,7 +33,7 @@ export const signin = async (req, res) => {
         const token = newToken(user)
         return res.status(201).send({token})
     }else{
-        return res.status(400).send({message: "Given password is incorrect"})
+        return res.status(400).send({message: "Password is incorrect"})
     }
 }
 

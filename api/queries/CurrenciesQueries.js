@@ -1,4 +1,4 @@
-import db from './../db/index'
+import db from '../db/index'
 
 const Queries = {
     addPaymentQuery(req) {
@@ -22,8 +22,15 @@ const Queries = {
         return db.query(deleteQuery, queryValues)
     },
 
-    selectAllPaymentsQuery(req){
-        const selectAll = 'SELECT name FROM budget.payment_methods_assigned_to_user WHERE user_id = $1'
+    selectAllCurrencies(req){
+        const selectAll = `
+            SELECT
+            currencies_assigned_to_user.id as id,
+            currencies_default.name
+            FROM
+            budget.currencies_assigned_to_user
+            INNER JOIN budget.currencies_default ON budget.currencies_assigned_to_user.currency_id = budget.currencies_default.id
+            WHERE currencies_assigned_to_user.user_id = $1`;
         const queryValues = [req.user.id]
         return db.query(selectAll, queryValues)
     },

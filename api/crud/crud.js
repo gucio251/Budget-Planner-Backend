@@ -37,14 +37,13 @@ const CRUD = {
         try{
             const { rows } = await config.selectAll(req)
 
-            const allItems = rows.map(row => row[config.property])
-
-            if(!allItems || !allItems[0]){
+            if(!rows|| !rows[0]){
                 return res.status(400).send({ message: `There are no ${config.name} registered for user` })
             }
 
-            return res.status(200).send({ result: allItems })
+            return res.status(200).send({ result: rows })
         }catch(err){
+            console.log(err);
             return res.status(400).send({ message: err })
         }
     },

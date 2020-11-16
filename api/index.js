@@ -5,7 +5,7 @@ import {signin, signup, protect} from './middleware/auth'
 import Users from './controllers/Users'
 import ExpenseTypes from './controllers/ExpenseTypes'
 import IncomeTypes from './controllers/IncomeTypes'
-import PaymentMethods from './controllers/PaymentMethods'
+import Currencies from './controllers/Currencies'
 import Expense from './controllers/Expenses'
 import Income from './controllers/Incomes'
 
@@ -40,10 +40,10 @@ router.post('/expenseTypes', protect, ExpenseTypes.add)
 router.put('/expenseTypes/:id', protect, ExpenseTypes.update)
 router.delete('/expenseTypes/:id', protect, ExpenseTypes.delete)
 
-router.get('/paymentMethods/all', protect, PaymentMethods.getAll)
-router.post('/paymentMethods', protect, PaymentMethods.add)
-router.put('/paymentMethods/:id', protect, PaymentMethods.update)
-router.delete('/paymentMethods/:id', protect, PaymentMethods.delete)
+router.get('/currencies/all', protect, Currencies.getAll)
+router.post('/paymentMethods', protect, Currencies.add)
+router.put('/paymentMethods/:id', protect, Currencies.update)
+router.delete('/paymentMethods/:id', protect, Currencies.delete)
 
 router.get('/incomeTypes', protect, IncomeTypes.getAll)
 router.post('/incomeTypes', protect, IncomeTypes.add)
@@ -52,12 +52,12 @@ router.delete('/incomeTypes/:id', protect, IncomeTypes.delete)
 
 router.post('/expenses', protect, Expense.add)
 router.put('/expenses/:id', protect, Expense.update)
-router.get('/expenses/:startDate/:endDate', protect, Expense.getAll)
+router.get('/expenses', protect, Expense.getAll)
 router.get('/expenses/sorted/:startDate/:endDate', protect, Expense.getAllSortedByType)
 router.delete('/expenses/:id', protect, Expense.delete)
 
 router.post('/incomes', protect, Income.add)
-router.get('/incomes/:startDate/:endDate', protect, Income.getAll)
+router.get('/incomes', protect, Income.getAll)
 router.get('/incomes/sorted/:startDate/:endDate', protect, Income.getAllSortedByType)
 router.put('/incomes/:id', protect, Income.update)
 router.delete('/incomes/:id', protect, Income.delete)

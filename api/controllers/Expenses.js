@@ -1,29 +1,5 @@
 import db from '../db'
 
-async function getPaymentTypeAndExpenseCategoryIDs(user_id, paymentName, expenseCategory){
-    const selectExpenseType = 'SELECT id FROM budget.expenses_category_assigned_to_user WHERE user_id = $1 AND name = $2'
-    const selectPaymentType = 'SELECT id FROM budget.payment_methods_assigned_to_user WHERE user_id = $1 AND name = $2'
-
-    try{
-        const expenseTypeResult = await db.query(selectExpenseType, [user_id, expenseCategory])
-        const paymentTypeResult = await db.query(selectPaymentType, [user_id, paymentName])
-
-        let expenseTypeId, paymentTypeId
-
-        expenseTypeId = !expenseTypeResult.rows[0] ? '' : expenseTypeResult.rows[0]
-        paymentTypeId = !paymentTypeResult.rows[0] ? '' : paymentTypeResult.rows[0]
-
-        const result = {
-            expenseType: expenseTypeId,
-            paymentType: paymentTypeId
-        }
-
-        return result
-    }catch(err){
-        return err
-    }
-
-}
 
 function createDateString(givenString){
     return givenString.slice(0,4) + '-' + givenString.slice(4,6) + '-' + givenString.slice(6,8)
@@ -31,31 +7,23 @@ function createDateString(givenString){
 
 const Expense = {
     async add(req, res){
+        const {body} = req;
+        const {amount, currency_id, category_id, transaction_date} = body;
         const insertExpense = 'INSERT INTO budget.expenses VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
-        if(!req.body.type || !req.body.payment_type || !req.body.amount || !req.body.date){
+        if(!amount || !currency_id || !category_id || !transaction_date){
             return res.status(400).send({message: 'Request parameter/s is/are missing'})
         }
 
         try{
-            const {expenseType, paymentType} = await getPaymentTypeAndExpenseCategoryIDs(req.user.id, req.body.payment_type, req.body.type)
-
-            if(!expenseType){
-                return res.status(400).send({message: `Expense has not been added. ${req.body.type} is not registered as expense type`})
-            }
-
-            if(!paymentType){
-                return res.status(400).send({ message: `Expense has not been added. ${req.body.payment_type} is not registered as payment type`})
-            }
-
             const comment = req.body.comment || ''
 
             const valuesToInsert = [
                 req.user.id,
-                expenseType.id,
-                paymentType.id,
-                req.body.amount,
-                req.body.date,
+                category_id,
+                currency_id,
+                amount,
+                transaction_date,
                 comment
             ]
 
@@ -116,22 +84,21 @@ const Expense = {
     },
 
     async getAll(req, res){
-        const selectQuery = 'SELECT * FROM budget.expenses_overview WHERE user_id = $1 AND transaction_date BETWEEN $2 AND $3'
+        const selectQuery = 'SELECT * FROM budget.expenses_overview WHERE user_id = $1'
 
         try{
-            const queryValues = [
-                req.user.id,
-                createDateString(req.params.startDate),
-                createDateString(req.params.endDate)
-            ]
 
-            const { rows } = await db.query(selectQuery, queryValues)
+            const { rows } = await db.query(selectQuery, [req.user.id]);
+
+            const finalRows = rows.map(row=> {
+                return Object.assign({}, row, {amount: parseFloat(row.amount)})
+            })
 
             if(!rows[0]){
                 return res.status(400).send({message: 'There is no expense assigned for user'})
             }
 
-            return res.status(200).send({result: rows})
+            return res.status(200).send({ result: finalRows });
         }catch(err){
             return res.status(400).send({message: err})
         }

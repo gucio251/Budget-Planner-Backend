@@ -6,59 +6,61 @@ function createDateString(givenString) {
 
 const Income = {
     async add(req, res){
-        const selectIncomeTypeId = 'SELECT * FROM budget.incomes_category_assigned_to_user WHERE user_id = $1 AND name = $2'
-        const addIncome = 'INSERT INTO budget.incomes VALUES (DEFAULT, $1, $2, $3, $4, $5) RETURNING *'
+            const { body } = req;
+            const {
+                amount,
+                currency_id,
+                category_id,
+                transaction_date,
+            } = body;
+        const addIncome = 'INSERT INTO budget.incomes VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
-        if(!req.body.type || !req.body.amount || !req.body.date){
-            return res.status(400).send({message: 'Request has missing parameters. Check if type/amount/date are present!'})
+        if(!amount || !currency_id || !category_id || !transaction_date){
+            return res.status(400).send({message: 'Request parameter/s is/are missing'})
         }
 
         try{
-            const { rows } = await db.query(selectIncomeTypeId, [req.user.id, req.body.type])
-
-            if(!rows[0]){
-                return res.status(400).send({message: 'Income type added to request does not exist in database'})
-            }
-
-            const incomeTypeId = rows[0].id
             const comment = req.body.comment || ''
 
             const valuesToInsert = [
-                req.user.id,
-                incomeTypeId,
-                req.body.amount,
-                req.body.date,
-                comment
-            ]
+              req.user.id,
+              category_id,
+              currency_id,
+              amount,
+              transaction_date,
+              comment,
+            ];
 
-            const addedIncome = await db.query(addIncome, valuesToInsert)
+            const { rows } = await db.query(addIncome, valuesToInsert)
 
             return res.status(200).send({
-                message: 'Income type has been successfully added',
-                result: addedIncome.rows[0].id
-            })
+              message: "Income type has been successfully added",
+              insertId: rows[0].id,
+            });
         }catch(err){
             return res.status(400).send({message: err})
         }
     },
 
     async getAll(req, res){
-        const selectQuery = 'SELECT * FROM budget.incomes_overview WHERE user_id = $1 AND transaction_date BETWEEN $2 AND $3'
+        const selectQuery = 'SELECT * FROM budget.incomes_overview WHERE user_id = $1'
 
         try{
             const queryValues = [
                 req.user.id,
-                createDateString(req.params.startDate),
-                createDateString(req.params.endDate)
             ]
 
             const { rows } = await db.query(selectQuery, queryValues)
+
+            const finalRows = rows.map(row=> {
+                return Object.assign({}, row, {amount: parseFloat(row.amount)})
+            })
 
             if(!rows[0]){
                 return res.status(400).send({message: 'There are no incomes registered'})
             }
 
-            return res.status(200).send({ results: rows })
+            return res.status(200).send({ results: finalRows });
         }catch(err){
             console.log(err)
             return res.status({message: err})
