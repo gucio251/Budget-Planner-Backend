@@ -39,47 +39,33 @@ const Expense = {
     },
 
     async update(req, res){
-        const selectOldExpense = 'SELECT * FROM budget.expenses WHERE id = $1'
-        const updateExpense = 'UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, payment_type_assigned_to_user_id = $2, amount = $3, date = $4, comments = $5 WHERE id = $6'
+        const { body } = req;
+        const {
+          amount,
+          currency_id,
+          category_id,
+          transaction_date,
+          comment,
+        } = body;
+        const updateExpenseQuery =
+          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6";
 
-        if(!req.params.id){
-            return res.status(400).send({message: 'Missing expense id'})
-        }
+        try {
+          const updatedValues = [
+            category_id,
+            amount,
+            transaction_date,
+            currency_id,
+            comment,
+            parseInt(req.params.id),
+          ];
 
-        try{
-            const { rows } = await db.query(selectOldExpense, [req.params.id])
-
-            if(!rows[0]){
-                return res.status(400).send({message: 'Expense with given id does not exist in db'})
-            }
-
-            const oldExpense = rows[0]
-
-            const updatedType = req.body.newType || ''
-            const updatedPayment = req.body.newPayment || ''
-
-            const updatedInfo = await getPaymentTypeAndExpenseCategoryIDs(req.user.id, updatedPayment, updatedType)
-
-            const updatedValues = [
-                updatedInfo.expenseType.id || null,
-                updatedInfo.paymentType.id || null,
-                req.body.newAmount || oldExpense.amount,
-                req.body.newDate || oldExpense.date,
-                req.body.newComment || oldExpense.comments,
-                oldExpense.id
-            ]
-
-            const nullAvailability = updatedValues.some((value)=> value == null)
-
-            if(nullAvailability){
-                return res.status(400).send({message: 'ExpenseType or/and PaymentType have not been assigned to user'})
-            }
-
-            await db.query(updateExpense, updatedValues)
-            return res.status(200).send({message: 'Expense has been successfully updated'})
-
-        }catch(err){
-            return res.status(400).send({message: err})
+          await db.query(updateExpenseQuery, updatedValues);
+          return res
+            .status(200)
+            .send({ message: "Expense has been successfully updated" });
+        } catch (err) {
+          return res.status(400).send({ message: err });
         }
     },
 
@@ -90,15 +76,7 @@ const Expense = {
 
             const { rows } = await db.query(selectQuery, [req.user.id]);
 
-            const finalRows = rows.map(row=> {
-                return Object.assign({}, row, {amount: parseFloat(row.amount)})
-            })
-
-            if(!rows[0]){
-                return res.status(400).send({message: 'There is no expense assigned for user'})
-            }
-
-            return res.status(200).send({ result: finalRows });
+            return res.status(200).send({ result: rows });
         }catch(err){
             return res.status(400).send({message: err})
         }
@@ -137,7 +115,7 @@ const Expense = {
             }
 
             await db.query(deleteQuery, [req.params.id])
-            return res.status(200).send({message: 'Expense has been successfully deleted'})
+            return res.status(200).send({message: 'Expense has been successfully deleted', id: req.params.id})
         }catch(err){
             res.status(400).send({message: err})
         }

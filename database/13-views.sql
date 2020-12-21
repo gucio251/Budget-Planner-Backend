@@ -9,7 +9,7 @@
     currencies_default.name as currency,
     expenses_subcategory_default.name as subcategory,
     ROUND(expenses.amount::DECIMAL, 2) as amount,
-    CAST(expenses.date as DATE) as transaction_date,
+    expenses.date as transaction_date,
     expenses.comments
     FROM budget.expenses
     inner join budget.currencies_assigned_to_user on budget.expenses.currency_id = budget.currencies_assigned_to_user.id
@@ -30,7 +30,7 @@
     currencies_default.name as currency,
     incomes_subcategory_default.name as subcategory,
     ROUND(incomes.amount::DECIMAL, 2) as amount,
-    CAST(incomes.date as DATE) as transaction_date,
+    incomes.date as transaction_date,
     incomes.comments
     FROM budget.incomes
     inner join budget.currencies_assigned_to_user on budget.incomes.currency_id = budget.currencies_assigned_to_user.id

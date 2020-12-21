@@ -5,8 +5,7 @@ const Queries = {
         const selectAll = `
             SELECT
                 category_default.name as value,
-                category_default.name as label,
-                array_agg(json_build_object('id', assigned_to_user.id, 'value', subcategory_default.name, 'label', subcategory_default.name)) as subcategories
+                array_agg(json_build_object('id', assigned_to_user.id, 'value', subcategory_default.name)) as subcategories
             FROM budget.expenses_category_assigned_to_user assigned_to_user
                 LEFT OUTER JOIN budget.expenses_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
                 LEFT OUTER JOIN budget.expenses_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id

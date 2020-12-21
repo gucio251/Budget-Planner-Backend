@@ -8,10 +8,11 @@ const Income = {
     async add(req, res){
             const { body } = req;
             const {
-                amount,
-                currency_id,
-                category_id,
-                transaction_date,
+              amount,
+              currency_id,
+              category_id,
+              transaction_date,
+              comment,
             } = body;
         const addIncome = 'INSERT INTO budget.incomes VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
@@ -20,8 +21,6 @@ const Income = {
         }
 
         try{
-            const comment = req.body.comment || ''
-
             const valuesToInsert = [
               req.user.id,
               category_id,
@@ -35,7 +34,7 @@ const Income = {
 
             return res.status(200).send({
               message: "Income type has been successfully added",
-              insertId: rows[0].id,
+              id: rows[0].id,
             });
         }catch(err){
             return res.status(400).send({message: err})
@@ -52,17 +51,8 @@ const Income = {
 
             const { rows } = await db.query(selectQuery, queryValues)
 
-            const finalRows = rows.map(row=> {
-                return Object.assign({}, row, {amount: parseFloat(row.amount)})
-            })
-
-            if(!rows[0]){
-                return res.status(400).send({message: 'There are no incomes registered'})
-            }
-
-            return res.status(200).send({ results: finalRows });
+            return res.status(200).send({ results: rows });
         }catch(err){
-            console.log(err)
             return res.status({message: err})
         }
     },
@@ -86,38 +76,29 @@ const Income = {
     },
 
     async update(req, res){
-        const selectIncomeTypeId = 'SELECT * FROM budget.incomes_category_assigned_to_user WHERE user_id = $1 AND name = $2'
-        const selectBasedIncome = 'SELECT * FROM budget.incomes WHERE id = $1'
-        const updateIncomeQuery = 'UPDATE budget.incomes SET income_category_assigned_to_user_id = $1, amount = $2, date = $3, comments = $4 WHERE id = $5'
+        const { body } = req;
+        const {
+            amount,
+            currency_id,
+            category_id,
+            transaction_date,
+            comment,
+        } = body;
+        const updateIncomeQuery = 'UPDATE budget.incomes SET income_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6'
 
         try{
-            const { rows } = await db.query(selectBasedIncome, [req.params.id])
-
-            if(!rows[0]){
-                return res.status(400).send({message: 'Income with given ID does not exist'})
-            }
-
-            const oldIncome = rows[0]
-            let result
-
-            if(req.body.type){
-                result = await db.query(selectIncomeTypeId, [req.user.id, req.body.type])
-            }
-
-            let newIncometypeId = result.rows[0].id || oldIncome.id
-
             const updatedValues = [
-                newIncometypeId,
-                req.body.amount || oldIncome.amount,
-                req.body.date || oldIncome.date,
-                req.body.comments || oldIncome.comments,
-                parseInt(req.params.id)
-            ]
+              category_id,
+              amount,
+              transaction_date,
+              currency_id,
+              comment,
+              parseInt(req.params.id),
+            ];
 
             await db.query(updateIncomeQuery, updatedValues)
             return res.status(200).send({message: 'Income has been successfully updated'})
         }catch(err){
-            console.log(err)
             return res.status(400).send({message: err})
         }
     },
@@ -134,7 +115,7 @@ const Income = {
             }
 
             await db.query(deleteQuery, [req.params.id])
-            return res.status(200).send({message: 'Income has been successfully deleted'})
+            return res.status(200).send({message: 'Income has been successfully deleted', id: req.params.id})
         }catch(err){
             res.status(400).send({message: err})
         }

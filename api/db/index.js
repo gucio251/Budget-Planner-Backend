@@ -3,15 +3,24 @@ import dotenv from 'dotenv'
 import 'babel-polyfill'
 import config from './../config/index'
 
-console.log(config)
 
 dotenv.config();
-
-console.log(process.env.NODE_ENV)
 
 const DATE_OID = 1082
 const TIMESTAMP_OID = 1114
 types.setTypeParser(DATE_OID, (date) => date)
+types.setTypeParser(types.builtins.INT8, (value) => {
+  return parseInt(value);
+});
+
+types.setTypeParser(types.builtins.FLOAT8, (value) => {
+  return parseFloat(value);
+});
+
+types.setTypeParser(types.builtins.NUMERIC, (value) => {
+  return parseFloat(value);
+});
+
 types.setTypeParser(TIMESTAMP_OID, (timestamp) => timestamp)
 
 const pool = new Pool({
