@@ -1,2 +1,0 @@
-CREATE DOMAIN budget.email AS VARCHAR NOT NULL CHECK (VALUE ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$');
-CREATE DOMAIN budget.amount AS DECIMAL (9,2) NOT NULL DEFAULT 0 CHECK (VALUE >= 0);

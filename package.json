@@ -2,12 +2,12 @@
   "name": "budget-api",
   "version": "1.0.0",
   "description": "desc",
-  "main": "api/index.js",
+  "main": "index.js",
   "engines": {
     "node": "10.15.3"
   },
   "scripts": {
-    "start": "node --require babel-register api/index.js",
+    "start": "node --require babel-register index.js",
     "test": "./node_modules/.bin/mocha --require babel-register tests/*.js --sort --exit"
   },
   "author": "Łukasz Naróg",
