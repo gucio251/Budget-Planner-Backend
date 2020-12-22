@@ -7,7 +7,7 @@
     "node": "10.15.3"
   },
   "scripts": {
-    "heroku-postbuild": "npm run build",
+    "build": "babel src -d build",
     "start": "node --require babel-register index.js",
     "test": "./node_modules/.bin/mocha --require babel-register tests/*.js --sort --exit"
   },
