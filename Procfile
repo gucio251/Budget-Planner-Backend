@@ -1,1 +1,1 @@
-web: cd ./api/index.js && npm run start
+web: node api/index.js
