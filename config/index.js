@@ -13,7 +13,7 @@ switch (env) {
     case 'dev':
     case 'development':
         envConfig = require('./dev').config
-        envConfig.port = 5436
+        envConfig.port = 5432
         break
     case 'test':
     case 'testing':
@@ -22,7 +22,7 @@ switch (env) {
         break
     default:
         envConfig = require('./dev').config
-        envConfig.port = 5436
+        envConfig.port = 5432
 }
 
 export default merge(baseConfig, envConfig)
