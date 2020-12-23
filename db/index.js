@@ -1,4 +1,5 @@
 import {Pool, types} from 'pg'
+import {parse} from 'pg-connection-string'
 import dotenv from 'dotenv'
 import 'babel-polyfill'
 import config from './../config/index'
@@ -23,9 +24,13 @@ types.setTypeParser(types.builtins.NUMERIC, (value) => {
 
 types.setTypeParser(TIMESTAMP_OID, (timestamp) => timestamp)
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
-})
+const config = parse(process.env.DATABASE_URL);
+
+config.ssl = {
+  rejectUnauthorized: false,
+};
+
+const pool = new Pool(config);
 
 export default {
     query(text, params){
