@@ -7,7 +7,10 @@
     "node": "10.15.3"
   },
   "scripts": {
-    "start": "./node_modules/.bin/babel-node index.js",
+    "start": "babel-node index.js",
+    "heroku-postbuild": "npm install",
+    "build": "babel index.js",
+    "server": "nodemon index.js --exec babel-node",
     "test": "./node_modules/.bin/mocha --require babel-register tests/*.js --sort --exit"
   },
   "author": "Łukasz Naróg",
