@@ -8,8 +8,9 @@
   },
   "scripts": {
     "start": "babel-node index.js",
+    "heroku-prebuild": "rm -rf node_modules",
     "heroku-postbuild": "npm install",
-    "build": "babel index.js",
+    "build": "babel-node index.js",
     "server": "nodemon index.js --exec babel-node",
     "test": "./node_modules/.bin/mocha --require babel-register tests/*.js --sort --exit"
   },
