@@ -24,13 +24,13 @@ types.setTypeParser(types.builtins.NUMERIC, (value) => {
 
 types.setTypeParser(TIMESTAMP_OID, (timestamp) => timestamp)
 
-const config = parse(process.env.DATABASE_URL);
+const finalConfig = parse(process.env.DATABASE_URL);
 
 config.ssl = {
   rejectUnauthorized: false,
 };
 
-const pool = new Pool(config);
+const pool = new Pool(finalConfig);
 
 export default {
     query(text, params){
