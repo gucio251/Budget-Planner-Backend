@@ -16,7 +16,7 @@ const Expense = {
         }
 
         try{
-            const comment = req.body.comment || ''
+            const comments = req.body.comments || ''
 
             const valuesToInsert = [
                 req.user.id,
@@ -24,7 +24,7 @@ const Expense = {
                 currency_id,
                 amount,
                 transaction_date,
-                comment
+                comments
             ]
 
             const { rows } = await db.query(insertExpense, valuesToInsert)
@@ -45,10 +45,10 @@ const Expense = {
           currency_id,
           category_id,
           transaction_date,
-          comment,
+          comments,
         } = body;
         const updateExpenseQuery =
-          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6";
+          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, commentss = $5 WHERE id = $6";
 
         try {
           const updatedValues = [
@@ -56,7 +56,7 @@ const Expense = {
             amount,
             transaction_date,
             currency_id,
-            comment,
+            comments,
             parseInt(req.params.id),
           ];
 
