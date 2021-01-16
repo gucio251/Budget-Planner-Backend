@@ -48,7 +48,7 @@ const Expense = {
           comments,
         } = body;
         const updateExpenseQuery =
-          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, commentss = $5 WHERE id = $6";
+          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6";
 
         try {
           const updatedValues = [
