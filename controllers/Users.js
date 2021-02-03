@@ -79,22 +79,12 @@ const Users = {
     },
 
     async getUserInfo(req, res){
-       const selectInfoQuery = 'SELECT login, email FROM budget.users WHERE id = $1'
-       const selectUserQuery = 'SELECT id FROM budget.users WHERE id = $1'
+       const selectInfoQuery = 'SELECT email FROM budget.users WHERE id = $1'
 
        try{
-           const { rows } = await db.query(selectUserQuery, [req.user.id])
-
-           const userId = rows[0].id
-
-           if(!userId){
-                return res.status(400).send({message: 'User does not exist in database'})
-           }
-
-            const userData = await db.query(selectInfoQuery, [req.user.id])
+            const {rows} = await db.query(selectInfoQuery, [req.user.id])
             return res.status(200).send({
-                login: userData.rows[0].login,
-                email: userData.rows[0].email
+                email: rows[0].email
             })
        }catch(err){
            return res.status(400).send(err)
