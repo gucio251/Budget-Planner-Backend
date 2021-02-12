@@ -14,8 +14,8 @@ const Queries = {
             WHERE assigned_to_user.user_id=$1
             GROUP BY category_default.name)
 
-            SELECT json_object_agg(category, subcategoryData)
-            from maintable
+        SELECT json_object_agg(category, subcategoryData) as categories
+        from maintable
         `;
         const queryValues = [req.user.id]
         return db.query(selectAll, queryValues)
