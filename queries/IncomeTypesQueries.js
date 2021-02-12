@@ -5,7 +5,7 @@ const Queries = {
         const selectAll = `
         with maintable as (
             SELECT
-                category_default.name as value,
+                category_default.name as category,
                 json_object_agg(subcategory_default.name, json_build_object('id', assigned_to_user.id)) as subcategoryData
             FROM budget.incomes_category_assigned_to_user assigned_to_user
                 LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
