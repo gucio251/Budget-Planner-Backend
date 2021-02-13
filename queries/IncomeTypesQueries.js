@@ -3,20 +3,30 @@ import db from './../db/index'
 const Queries = {
     selectAllIncomesTypesQuery(req) {
         const selectAll = `
-        with maintable as (
-            SELECT
-                category_default.name as category,
-                json_object_agg(subcategory_default.name, json_build_object('id', assigned_to_user.id)) as subcategoryData
-            FROM budget.incomes_category_assigned_to_user assigned_to_user
-                LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
-                LEFT OUTER JOIN budget.incomes_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id
-                LEFT OUTER JOIN budget.incomes_category_default category_default on config_default.category_id = category_default.id
-            WHERE assigned_to_user.user_id=$1
-            GROUP BY category_default.name)
+            with maintable as (
+                SELECT
+                    category_default.name as category,
+                    json_object_agg(subcategory_default.name, json_build_object('id', assigned_to_user.id)) as subcategoryData
+                FROM budget.incomes_category_assigned_to_user assigned_to_user
+                    LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
+                    LEFT OUTER JOIN budget.incomes_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id
+                    LEFT OUTER JOIN budget.incomes_category_default category_default on config_default.category_id = category_default.id
+                WHERE assigned_to_user.user_id=$1
+                GROUP BY category_default.name
+            )
 
-        SELECT json_object_agg(category, subcategoryData) as categories
-        from maintable
-        `;
+            groupedSubcategories as (
+                SELECT
+                category,
+                json_object_agg('subcategories', subcategoryData) as subcategories
+                FROM maintable
+                group by category
+            )
+
+            SELECT
+                json_object_agg(category, subcategories) as categories
+            FROM groupedSubcategories
+            `;
         const queryValues = [req.user.id]
         return db.query(selectAll, queryValues)
     },
