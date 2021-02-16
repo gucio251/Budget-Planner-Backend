@@ -6,7 +6,7 @@ const Queries = {
             with maintable as (
                 SELECT
                     category_default.name as category,
-                    json_object_agg(subcategory_default.name, json_build_object('id', assigned_to_user.id)) as subcategoryData
+                    json_object_agg(assigned_to_user.id, json_build_object('id', assigned_to_user.id, 'name', subcategory_default.name)) as subcategoryData
                 FROM budget.incomes_category_assigned_to_user assigned_to_user
                     LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
                     LEFT OUTER JOIN budget.incomes_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id
@@ -15,17 +15,9 @@ const Queries = {
                 GROUP BY category_default.name
             ),
 
-            groupedSubcategories as (
-                SELECT
-                category,
-                json_object_agg('subcategories', subcategoryData) as subcategories
-                FROM maintable
-                group by category
-            )
-
             SELECT
-                json_object_agg(category, subcategories) as categories
-            FROM groupedSubcategories
+                json_object_agg(category, subcategoryData)
+            FROM maintable
             `;
         const queryValues = [req.user.id]
         return db.query(selectAll, queryValues)
