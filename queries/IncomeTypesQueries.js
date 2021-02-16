@@ -16,7 +16,7 @@ const Queries = {
             )
 
             SELECT
-                json_object_agg(category, subcategoryData) as categories
+                json_object_agg(category, json_build_object('subcategories', subcategoryData)) as categories
             FROM maintable
             `;
         const queryValues = [req.user.id]
