@@ -13,7 +13,7 @@ const Queries = {
                     LEFT OUTER JOIN budget.incomes_category_default category_default on config_default.category_id = category_default.id
                 WHERE assigned_to_user.user_id=$1
                 GROUP BY category_default.name
-            ),
+            )
 
             SELECT
                 json_object_agg(category, subcategoryData) as categories
