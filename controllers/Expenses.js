@@ -78,7 +78,8 @@ const Expense = {
                         'currency_id', currency_id,
                         'amount', amount,
                         'date', date,
-                        'comment', comments
+                        'comment', comments,
+                        'type', 'expense'
                     )
                 ) as expenses
             FROM budget.expenses where user_id=$1

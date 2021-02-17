@@ -50,7 +50,8 @@ const Income = {
                         'currency_id', currency_id,
                         'amount', amount,
                         'date', date,
-                        'comment', comments
+                        'comment', comments,
+                        'type', 'income'
                     )
                 ) as incomes
             FROM budget.incomes where user_id=$1
