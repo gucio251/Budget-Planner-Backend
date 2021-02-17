@@ -42,7 +42,19 @@ const Income = {
     },
 
     async getAll(req, res){
-        const selectQuery = 'SELECT * FROM budget.incomes_overview WHERE user_id = $1'
+        const selectQuery = `
+            SELECT
+                json_object_agg(
+                    id, json_build_object(
+                        'incomeType_id', income_category_assigned_to_user_id,
+                        'currency_id', currency_id,
+                        'amount', amount,
+                        'date', date,
+                        'comment', comments
+                    )
+                ) as incomes
+            FROM budget.incomes where user_id=$1
+        `;
 
         try{
             const queryValues = [

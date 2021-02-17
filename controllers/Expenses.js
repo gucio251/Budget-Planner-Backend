@@ -70,7 +70,19 @@ const Expense = {
     },
 
     async getAll(req, res){
-        const selectQuery = 'SELECT * FROM budget.expenses_overview WHERE user_id = $1'
+        const selectQuery = `
+            SELECT
+                json_object_agg(
+                    id, json_build_object(
+                        'expenseType_id', expense_category_assigned_to_user_id,
+                        'currency_id', currency_id,
+                        'amount', amount,
+                        'date', date,
+                        'comment', comments
+                    )
+                ) as expenses
+            FROM budget.expenses where user_id=$1
+        `
 
         try{
 
