@@ -3,21 +3,15 @@ import db from './../db/index'
 const Queries = {
     selectAllIncomesTypesQuery(req) {
         const selectAll = `
-            with maintable as (
-                SELECT
-                    category_default.name as category,
-                    json_object_agg(assigned_to_user.id, json_build_object('id', assigned_to_user.id, 'name', subcategory_default.name)) as subcategoryData
-                FROM budget.incomes_category_assigned_to_user assigned_to_user
-                    LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
-                    LEFT OUTER JOIN budget.incomes_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id
-                    LEFT OUTER JOIN budget.incomes_category_default category_default on config_default.category_id = category_default.id
-                WHERE assigned_to_user.user_id=$1
-                GROUP BY category_default.name
-            )
-
             SELECT
-                json_object_agg(category, json_build_object('subcategories', subcategoryData)) as categories
-            FROM maintable
+                json_build_object('id', config_default.category_id, 'name', category_default.name, 'subcategories', array_agg(assigned_to_user.id)) as categories,
+                json_object_agg(assigned_to_user.id, json_build_object('id', assigned_to_user.id, 'name', subcategory_default.name,'category_id', config_default.category_id)) as subcategories
+            FROM budget.incomes_category_assigned_to_user assigned_to_user
+                LEFT OUTER JOIN budget.incomes_categories_config_default config_default on assigned_to_user.connected_cat_id = config_default.id
+                LEFT OUTER JOIN budget.incomes_subcategory_default subcategory_default on config_default.subcategory_id = subcategory_default.id
+                LEFT OUTER JOIN budget.incomes_category_default category_default on config_default.category_id = category_default.id
+            WHERE assigned_to_user.user_id=$1
+            GROUP BY category_default.name, config_default.category_id
             `;
         const queryValues = [req.user.id]
         return db.query(selectAll, queryValues)
