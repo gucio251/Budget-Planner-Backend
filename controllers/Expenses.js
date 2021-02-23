@@ -8,10 +8,10 @@ function createDateString(givenString){
 const Expense = {
     async add(req, res){
         const {body} = req;
-        const {amount, currency_id, category_id, transaction_date} = body;
+        const {amount, currency_id, transaction_type_id, transaction_date} = body;
         const insertExpense = 'INSERT INTO budget.expenses VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
-        if(!amount || !currency_id || !category_id || !transaction_date){
+        if(!amount || !currency_id || !transaction_type_id || !transaction_date){
             return res.status(400).send({message: 'Request parameter/s is/are missing'})
         }
 
@@ -19,13 +19,13 @@ const Expense = {
             const comments = req.body.comments || ''
 
             const valuesToInsert = [
-                req.user.id,
-                category_id,
-                currency_id,
-                amount,
-                transaction_date,
-                comments
-            ]
+              req.user.id,
+              transaction_type_id,
+              currency_id,
+              amount,
+              transaction_date,
+              comments,
+            ];
 
             const { rows } = await db.query(insertExpense, valuesToInsert)
 
@@ -48,7 +48,7 @@ const Expense = {
           comments,
         } = body;
         const updateExpenseQuery =
-          "UPDATE budget.expenses SET expense_category_assigned_to_user_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6";
+          "UPDATE budget.expenses SET transaction_type_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6";
 
         try {
           const updatedValues = [
