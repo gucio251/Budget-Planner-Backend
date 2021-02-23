@@ -74,7 +74,7 @@ const Expense = {
             SELECT
                 json_object_agg(
                     id, json_build_object(
-                        'expenseType_id', expense_category_assigned_to_user_id,
+                        'transaction_type_id', transaction_type_id,
                         'currency_id', currency_id,
                         'amount', amount,
                         'date', date,
@@ -83,7 +83,7 @@ const Expense = {
                     )
                 ) as expenses
             FROM budget.expenses where user_id=$1
-        `
+        `;
 
         try{
 

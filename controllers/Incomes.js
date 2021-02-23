@@ -46,7 +46,7 @@ const Income = {
             SELECT
                 json_object_agg(
                     id, json_build_object(
-                        'incomeType_id', income_category_assigned_to_user_id,
+                        'transaction_type_id', transaction_type_id,
                         'currency_id', currency_id,
                         'amount', amount,
                         'date', date,
