@@ -74,6 +74,7 @@ const Expense = {
             SELECT
                 json_object_agg(
                     id, json_build_object(
+                        'id', id,
                         'transaction_type_id', transaction_type_id,
                         'currency_id', currency_id,
                         'amount', amount,
