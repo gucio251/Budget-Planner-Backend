@@ -92,17 +92,17 @@ const Income = {
     async update(req, res){
         const { body } = req;
         const {
-            amount,
-            currency_id,
-            category_id,
-            date,
-            comments,
+          amount,
+          currency_id,
+          transaction_type_id,
+          date,
+          comments,
         } = body;
         const updateIncomeQuery = 'UPDATE budget.incomes SET transaction_type_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6'
 
         try{
             const updatedValues = [
-              category_id,
+              transaction_type_id,
               amount,
               date,
               currency_id,

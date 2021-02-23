@@ -43,7 +43,7 @@ const Expense = {
         const {
           amount,
           currency_id,
-          category_id,
+          transaction_type_id,
           date,
           comments,
         } = body;
@@ -52,7 +52,7 @@ const Expense = {
 
         try {
           const updatedValues = [
-            category_id,
+            transaction_type_id,
             amount,
             date,
             currency_id,
