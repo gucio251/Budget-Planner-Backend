@@ -8,10 +8,10 @@ function createDateString(givenString){
 const Expense = {
     async add(req, res){
         const {body} = req;
-        const {amount, currency_id, transaction_type_id, transaction_date} = body;
+        const {amount, currency_id, transaction_type_id, date} = body;
         const insertExpense = 'INSERT INTO budget.expenses VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
-        if(!amount || !currency_id || !transaction_type_id || !transaction_date){
+        if(!amount || !currency_id || !transaction_type_id || !date){
             return res.status(400).send({message: 'Request parameter/s is/are missing'})
         }
 
@@ -23,7 +23,7 @@ const Expense = {
               transaction_type_id,
               currency_id,
               amount,
-              transaction_date,
+              date,
               comments,
             ];
 
@@ -44,7 +44,7 @@ const Expense = {
           amount,
           currency_id,
           category_id,
-          transaction_date,
+          date,
           comments,
         } = body;
         const updateExpenseQuery =
@@ -54,7 +54,7 @@ const Expense = {
           const updatedValues = [
             category_id,
             amount,
-            transaction_date,
+            date,
             currency_id,
             comments,
             parseInt(req.params.id),

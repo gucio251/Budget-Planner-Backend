@@ -11,12 +11,12 @@ const Income = {
               amount,
               currency_id,
               transaction_type_id,
-              transaction_date,
+              date,
               comments,
             } = body;
         const addIncome = 'INSERT INTO budget.incomes VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING *'
 
-        if(!amount || !currency_id || !transaction_type_id || !transaction_date){
+        if(!amount || !currency_id || !transaction_type_id || !date){
             return res.status(400).send({message: 'Request parameter/s is/are missing'})
         }
 
@@ -26,7 +26,7 @@ const Income = {
               transaction_type_id,
               currency_id,
               amount,
-              transaction_date,
+              date,
               comments,
             ];
 
@@ -94,7 +94,7 @@ const Income = {
             amount,
             currency_id,
             category_id,
-            transaction_date,
+            date,
             comments,
         } = body;
         const updateIncomeQuery = 'UPDATE budget.incomes SET transaction_type_id = $1, amount = $2, date = $3, currency_id = $4, comments = $5 WHERE id = $6'
@@ -103,7 +103,7 @@ const Income = {
             const updatedValues = [
               category_id,
               amount,
-              transaction_date,
+              date,
               currency_id,
               comments,
               parseInt(req.params.id),
