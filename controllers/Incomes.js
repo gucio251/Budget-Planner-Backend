@@ -51,7 +51,7 @@ const Income = {
                         'currency_id', currency_id,
                         'amount', amount,
                         'date', date,
-                        'comment', comments,
+                        'comments', comments,
                         'type', 'income'
                     )
                 ) as incomes
